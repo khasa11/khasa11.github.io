@@ -1,30 +1,37 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata } from "next";
+import "./globals.css";
+import localFont from 'next/font/local';
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const inter = localFont({
+  src: './font/Inter-VariableFont_opsz,wght.ttf',
+  variable: '--font-sans',
+  display: 'swap',
+});
 
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+export const metadata: Metadata = {
+  title: "Пространство — недвижимость для бизнеса",
+  description:
+    "Коммерческая недвижимость для бизнеса. Подбор, проверка и сопровождение сделок.",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
-      lang="en"
+      lang="ru"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      className={cn("antialiased", inter.variable, "font-sans")}
     >
       <body>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
