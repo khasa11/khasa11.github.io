@@ -40,7 +40,6 @@ const capabilities = [
   },
 ];
 
-/** Холодный анимированный фон: синие свечения в чёрной глубине */
 function HeroBackground() {
   return (
     <div
