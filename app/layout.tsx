@@ -13,9 +13,9 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Пространство — недвижимость для бизнеса",
+  title: "Rishat Khasanov",
   description:
-    "Коммерческая недвижимость для бизнеса. Подбор, проверка и сопровождение сделок.",
+    "Rishat Khasanov's portfolio.",
 };
 
 export default function RootLayout({
