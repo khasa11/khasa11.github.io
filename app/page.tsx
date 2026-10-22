@@ -133,17 +133,17 @@ export default function Home() {
 
         <div className="relative z-10 flex max-w-2xl flex-col items-center">
           <p className="hero-reveal mb-8 text-[11px] font-medium uppercase tracking-[0.22em] text-zinc-400">
-            Full-stack developer — Frontend & UI
+            Full-stack developer
           </p>
 
           <h1 className="hero-reveal hero-reveal-1 text-[2.75rem] font-medium leading-[1.06] tracking-[-0.045em] sm:text-6xl lg:text-[5.25rem]">
-            Thoughtful interfaces,
+            Thoughtful projects,
             <br />
             <span className="text-blue-500">end to end.</span>
           </h1>
 
           <p className="hero-reveal hero-reveal-2 mt-8 max-w-md text-[15px] leading-[1.75] text-zinc-400">
-            I&apos;m Khasa. I build complete web applications with a
+            I&apos;m Rishat Khasanov. I build complete web applications with a
             particular attention to clean interfaces and the details
             that make them feel right.
           </p>
