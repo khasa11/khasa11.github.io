@@ -31,6 +31,7 @@ import AnimatedGradient from "@/components/ui/animated-gradient";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import DotGrid from "@/components/ui/dot-grid";
 import {
   Card,
   CardContent,
@@ -180,9 +181,11 @@ function UIPlayground() {
     <section
       id="playground"
       aria-labelledby="playground-heading"
-      className="scroll-mt-8 border-t border-border py-24 lg:py-32"
+      className="relative left-1/2 isolate w-screen -translate-x-1/2 scroll-mt-8 border-y border-border py-24 lg:py-32"
     >
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <DotGrid theme="dark" spacing={22} />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
             <p className="section-label">03 / UI playground</p>
