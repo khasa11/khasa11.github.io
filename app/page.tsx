@@ -1,9 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  MessageCircle,
+  Pause,
+  Play,
+  Send,
+  SkipBack,
+  SkipForward,
+  Volume2,
+} from "lucide-react";
+import {
+  SiCss,
+  SiFigma,
+  SiGit,
+  SiGithub,
+  SiHtml5,
+  SiJavascript,
+  SiNextdotjs,
+  SiReact,
+  SiShadcnui,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
 
+import AnimatedGradient from "@/components/ui/animated-gradient";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -11,8 +38,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import { Input } from "@/components/ui/input";
-import { ShaderAnimation } from "@/components/ui/shader-animation";
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageGroup,
+} from "@/components/ui/message";
 
 const navigation = [
   { label: "About", href: "#about" },
@@ -21,105 +59,51 @@ const navigation = [
   { label: "Contact", href: "#contact" },
 ];
 
-const stack = [
-  {
-    title: "Frontend",
-    description: "My main focus",
-    technologies: ["React", "Next.js", "JavaScript", "TypeScript"],
-  },
-  {
-    title: "UI & styling",
-    description: "Details that matter",
-    technologies: [
-      "Tailwind CSS",
-      "shadcn/ui",
-      "Responsive layouts",
-    ],
-  },
-  {
-    title: "Exploring",
-    description: "Always curious",
-    technologies: ["Expo", "New tools", "Better workflows"],
-  },
+const primaryStack: Array<{ name: string; icon: React.ComponentType<{ className?: string }> }> = [
+  { name: "React", icon: SiReact },
+  { name: "Next.js", icon: SiNextdotjs },
+  { name: "TypeScript", icon: SiTypescript },
+  { name: "JavaScript", icon: SiJavascript },
+  { name: "Tailwind CSS", icon: SiTailwindcss },
+  { name: "shadcn/ui", icon: SiShadcnui },
+  { name: "HTML", icon: SiHtml5 },
+  { name: "CSS", icon: SiCss },
+  { name: "Git", icon: SiGit },
+  { name: "GitHub", icon: SiGithub },
+  { name: "Figma", icon: SiFigma },
 ];
 
-const capabilities = [
+const leadershipSignals = [
   {
-    number: "01",
-    title: "Public website",
+    title: "Product thinking",
     description:
-      "Public-facing pages that introduce the business and bring the platform together.",
+      "Turn business constraints into clear flows, useful UI decisions, and measurable outcomes.",
   },
   {
-    number: "02",
-    title: "Employee workspace",
+    title: "Design systems",
     description:
-      "Employee accounts and reporting interfaces, with access based on permissions assigned by an administrator.",
+      "Build reusable patterns that keep the product consistent and scale with the team.",
   },
   {
-    number: "03",
-    title: "Administration",
+    title: "Delivery quality",
     description:
-      "Interfaces for managing employee access and working with the platform.",
+      "Ship robust interfaces quickly without sacrificing usability, clarity, or polish.",
   },
 ];
-
-const demoTasks = [
-  {
-    id: "employee-workspace",
-    title: "Employee workspace",
-    category: "Dashboard",
-    status: "In progress",
-  },
-  {
-    id: "report-filters",
-    title: "Report filters",
-    category: "Interaction",
-    status: "Ready",
-  },
-  {
-    id: "mobile-navigation",
-    title: "Mobile navigation",
-    category: "Layout",
-    status: "Ready",
-  },
-] as const;
-
-const taskFilters = ["All", "Ready", "In progress"] as const;
-
-type TaskFilter = (typeof taskFilters)[number];
 
 function HeroBackground() {
-  const [showShader, setShowShader] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
-
-    function updateMotionPreference() {
-      setShowShader(!mediaQuery.matches);
-    }
-
-    updateMotionPreference();
-
-    mediaQuery.addEventListener("change", updateMotionPreference);
-
-    return () => {
-      mediaQuery.removeEventListener("change", updateMotionPreference);
-    };
-  }, []);
-
   return (
     <div
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 overflow-hidden"
     >
-      {showShader && (
-        <div className="hero-shader absolute inset-0 opacity-60 mix-blend-screen">
-          <ShaderAnimation />
-        </div>
-      )}
+      <AnimatedGradient
+        config={{ preset: "Prism", speed: 30 }}
+        noise={{ opacity: 0.18, scale: 1.2 }}
+        style={{
+          filter: "saturate(1.35) contrast(1.1) brightness(1.05)",
+        }}
+      />
 
       <div className="hero-vignette absolute inset-0" />
 
@@ -137,28 +121,59 @@ function HeroBackground() {
 }
 
 function UIPlayground() {
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<TaskFilter>("All");
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [chatMessage, setChatMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState([
+    { from: "assistant", text: "Hi! What are you working on today?" },
+    { from: "you", text: "Refining a component library for a new project." },
+    { from: "assistant", text: "Nice. Want to start with the calendar or navigation?" },
+  ]);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const normalizedQuery = query.trim().toLowerCase();
+  useEffect(() => {
+    if (!carouselApi) return;
 
-  const visibleTasks = demoTasks.filter((task) => {
-    const matchesStatus =
-      filter === "All" || task.status === filter;
+    const updateActiveSlide = () => {
+      setActiveSlide(carouselApi.selectedScrollSnap());
+    };
 
-    const matchesQuery =
-      `${task.title} ${task.category}`
-        .toLowerCase()
-        .includes(normalizedQuery);
+    updateActiveSlide();
+    carouselApi.on("select", updateActiveSlide);
 
-    return matchesStatus && matchesQuery;
-  });
+    return () => {
+      carouselApi.off("select", updateActiveSlide);
+    };
+  }, [carouselApi]);
 
-  const hasActiveFilters = query.length > 0 || filter !== "All";
+  function togglePlayback() {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-  function resetFilters() {
-    setQuery("");
-    setFilter("All");
+    if (audio.paused) {
+      void audio.play().catch(() => setIsPlaying(false));
+    } else {
+      audio.pause();
+    }
+  }
+
+  function sendChatMessage(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const text = chatMessage.trim();
+    if (!text) return;
+
+    setChatMessages((messages) => [...messages, { from: "you", text }]);
+    setChatMessage("");
+  }
+
+  function formatTime(seconds: number) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   }
 
   return (
@@ -167,155 +182,226 @@ function UIPlayground() {
       aria-labelledby="playground-heading"
       className="scroll-mt-8 border-t border-border py-24 lg:py-32"
     >
-      <p className="section-label">03 / UI playground</p>
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="section-label">03 / UI playground</p>
+            <h2 id="playground-heading" className="section-heading mt-4">
+              A few things to play with.
+            </h2>
+          </div>
 
-      <div className="mt-8 grid items-start gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-        <div>
-          <h2
-            id="playground-heading"
-            className="section-heading"
-          >
-            Small components.
-            <br />
-            Real interactions.
-          </h2>
-
-          <p className="body-copy mt-6">
-            A small, working example built with shadcn/ui.
-            Search the list, filter by status, or reset the view.
-          </p>
-
-          <p className="mt-4 text-xs leading-6 text-muted-foreground">
-            Illustrative data only. This is not a screenshot or a
-            reproduction of the internal platform.
-          </p>
-
-          <div className="mt-6 flex flex-wrap gap-2">
-            {["Button", "Card", "Badge", "Input"].map((component) => (
-              <Badge
-                key={component}
-                variant="outline"
-                className="font-normal"
-              >
-                {component}
-              </Badge>
-            ))}
+          <div className="flex items-center gap-2">
+            <span className="mr-2 text-xs tabular-nums text-muted-foreground">
+              {String(activeSlide + 1).padStart(2, "0")} / 03
+            </span>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label="Previous demo"
+              onClick={() => carouselApi?.scrollPrev()}
+              className="rounded-full border-border bg-card"
+            >
+              <ChevronLeft />
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label="Next demo"
+              onClick={() => carouselApi?.scrollNext()}
+              className="rounded-full border-border bg-card"
+            >
+              <ChevronRight />
+            </Button>
           </div>
         </div>
 
-        <Card className="min-w-0 border-border bg-card text-card-foreground shadow-none">
-          <CardHeader>
-            <CardTitle>Interface tasks</CardTitle>
-
-            <CardDescription>
-              A little interaction, not just a static preview.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-5">
-            <div className="space-y-2">
-              <label
-                htmlFor="task-search"
-                className="text-sm font-medium"
-              >
-                Search tasks
-              </label>
-
-              <Input
-                id="task-search"
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Try ‘report’ or ‘layout’…"
-                className="bg-background"
-              />
-            </div>
-
-            <div
-              role="group"
-              aria-label="Filter tasks by status"
-              className="flex flex-wrap gap-2"
-            >
-              {taskFilters.map((status) => (
-                <Button
-                  key={status}
-                  type="button"
-                  size="sm"
-                  variant={filter === status ? "default" : "outline"}
-                  aria-pressed={filter === status}
-                  onClick={() => setFilter(status)}
-                >
-                  {status}
-                </Button>
-              ))}
-            </div>
-
-            <p
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-              className="text-xs text-muted-foreground"
-            >
-              {visibleTasks.length}{" "}
-              {visibleTasks.length === 1 ? "task" : "tasks"} found
-            </p>
-
-            <ul
-              aria-label="Matching tasks"
-              className="divide-y divide-border rounded-lg border border-border"
-            >
-              {visibleTasks.map((task) => (
-                <li
-                  key={task.id}
-                  className="flex flex-wrap items-center justify-between gap-3 p-4"
-                >
-                  <div>
-                    <p className="text-sm font-medium">
-                      {task.title}
-                    </p>
-
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {task.category}
-                    </p>
+        <Carousel
+          setApi={setCarouselApi}
+          opts={{ align: "start", loop: true }}
+          aria-label="Interactive component demos"
+          className="mt-8"
+        >
+          <CarouselContent className="-ml-5">
+            <CarouselItem className="basis-full pl-5 md:basis-[70%] xl:basis-1/2">
+              <Card className="h-full min-h-[510px] overflow-hidden border-border bg-card shadow-none">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center gap-2 text-ring">
+                    <CalendarDays className="size-4" aria-hidden="true" />
+                    <span className="text-[11px] font-medium uppercase tracking-[0.18em]">Date picker</span>
                   </div>
+                  <CardTitle className="mt-1">Calendar</CardTitle>
+                  <CardDescription>Choose a day to schedule a meeting.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    className="mx-auto"
+                  />
+                  <div className="mt-2 flex w-full max-w-sm items-center gap-3 rounded-lg border border-border bg-muted/30 p-3">
+                    <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-ring">
+                      <CalendarDays className="size-4" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium">Selected date</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {selectedDate?.toLocaleDateString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        }) ?? "Pick a date"}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </CarouselItem>
 
-                  <Badge
-                    variant="outline"
-                    className={
-                      task.status === "Ready"
-                        ? "border-primary/30 bg-primary/10 text-ring"
-                        : "text-muted-foreground"
-                    }
-                  >
-                    {task.status}
-                  </Badge>
-                </li>
-              ))}
+            <CarouselItem className="basis-full pl-5 md:basis-[70%] xl:basis-1/2">
+              <Card className="h-full min-h-[510px] overflow-hidden border-border bg-card shadow-none">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2 text-ring">
+                    <Volume2 className="size-4" aria-hidden="true" />
+                    <span className="text-[11px] font-medium uppercase tracking-[0.18em]">Now playing</span>
+                  </div>
+                  <CardTitle className="mt-1">Music player</CardTitle>
+                  <CardDescription>A focused playback control with real audio.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-hidden rounded-xl border border-border bg-muted/30">
+                    <div
+                      role="img"
+                      aria-label="Singer performing on stage"
+                      className="relative aspect-[2/1] overflow-hidden bg-[#18201d] bg-cover bg-center opacity-90"
+                      style={{
+                        backgroundImage:
+                          "url(https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1000&q=85)",
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <p className="absolute bottom-4 left-4 text-xs font-medium uppercase tracking-[0.2em] text-white/80">Studio sessions · Vol. 01</p>
+                    </div>
 
-              {visibleTasks.length === 0 && (
-                <li className="p-6">
-                  <p className="text-sm font-medium">
-                    No matching tasks
-                  </p>
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-medium">SoundHelix sample</p>
+                          <p className="mt-1 text-sm text-muted-foreground">Instrumental demo track</p>
+                        </div>
+                        <Badge variant="outline">Ambient</Badge>
+                      </div>
 
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Try another search or reset the filters.
-                  </p>
-                </li>
-              )}
-            </ul>
+                      <audio
+                        ref={audioRef}
+                        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+                        preload="none"
+                        onPlay={() => setIsPlaying(true)}
+                        onPause={() => setIsPlaying(false)}
+                        onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+                        onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
+                      />
 
-            <Button
+                      <input
+                        aria-label="Track progress"
+                        type="range"
+                        min={0}
+                        max={duration || 1}
+                        step={1}
+                        value={currentTime}
+                        onChange={(event) => {
+                          const time = Number(event.target.value);
+                          if (audioRef.current) audioRef.current.currentTime = time;
+                          setCurrentTime(time);
+                        }}
+                        className="mt-5 h-1 w-full cursor-pointer accent-primary"
+                      />
+                      <div className="mt-1 flex justify-between text-[10px] tabular-nums text-muted-foreground">
+                        <span>{formatTime(currentTime)}</span>
+                        <span>{formatTime(duration)}</span>
+                      </div>
+
+                      <div className="mt-4 flex items-center justify-center gap-5">
+                        <Button variant="ghost" size="icon" aria-label="Restart track" onClick={() => {
+                          if (audioRef.current) audioRef.current.currentTime = 0;
+                          setCurrentTime(0);
+                        }}>
+                          <SkipBack />
+                        </Button>
+                        <Button size="icon-lg" aria-label={isPlaying ? "Pause track" : "Play track"} onClick={togglePlayback}>
+                          {isPlaying ? <Pause /> : <Play />}
+                        </Button>
+                        <Button variant="ghost" size="icon" aria-label="Skip to end" onClick={() => {
+                          if (audioRef.current && duration) audioRef.current.currentTime = duration;
+                        }}>
+                          <SkipForward />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </CarouselItem>
+
+            <CarouselItem className="basis-full pl-5 md:basis-[70%] xl:basis-1/2">
+              <Card className="h-full min-h-[510px] border-border bg-card shadow-none">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2 text-ring">
+                    <MessageCircle className="size-4" aria-hidden="true" />
+                    <span className="text-[11px] font-medium uppercase tracking-[0.18em]">Conversation</span>
+                  </div>
+                  <CardTitle className="mt-1">Support chat</CardTitle>
+                  <CardDescription>Send a message to try the chat interaction.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex h-[390px] flex-col">
+                  <MessageGroup className="min-h-0 flex-1 overflow-y-auto pr-2">
+                    {chatMessages.map((item, index) => (
+                      <Message key={`${item.from}-${index}`} align={item.from === "you" ? "end" : "start"}>
+                        <MessageAvatar className="size-7 self-start bg-muted text-[10px] font-medium">
+                          {item.from === "you" ? "RK" : "UI"}
+                        </MessageAvatar>
+                        <MessageContent className="max-w-[82%]">
+                          <div className={`rounded-xl px-3 py-2.5 text-sm leading-5 ${item.from === "you" ? "bg-primary text-primary-foreground" : "bg-muted/70 text-foreground"}`}>
+                            {item.text}
+                          </div>
+                        </MessageContent>
+                      </Message>
+                    ))}
+                  </MessageGroup>
+
+                  <form onSubmit={sendChatMessage} className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+                    <Input
+                      aria-label="Write a chat message"
+                      value={chatMessage}
+                      onChange={(event) => setChatMessage(event.target.value)}
+                      placeholder="Write a message…"
+                      className="bg-background"
+                    />
+                    <Button type="submit" size="icon" aria-label="Send message" disabled={!chatMessage.trim()}>
+                      <Send />
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </CarouselItem>
+          </CarouselContent>
+        </Carousel>
+
+        <div className="mt-5 flex justify-center gap-2" aria-label="Choose a demo slide">
+          {[0, 1, 2].map((slide) => (
+            <button
+              key={slide}
               type="button"
-              variant="ghost"
-              size="sm"
-              disabled={!hasActiveFilters}
-              onClick={resetFilters}
-            >
-              Reset filters
-            </Button>
-          </CardContent>
-        </Card>
+              aria-label={`Go to demo ${slide + 1}`}
+              aria-current={activeSlide === slide ? "true" : undefined}
+              onClick={() => carouselApi?.scrollTo(slide)}
+              className={`h-1.5 rounded-full transition-all ${activeSlide === slide ? "w-7 bg-foreground" : "w-1.5 bg-muted-foreground/40 hover:bg-muted-foreground"}`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -411,177 +497,168 @@ export default function Home() {
       </section>
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="flex flex-wrap items-center gap-x-10 gap-y-3 border-y border-border py-6 text-[13px] text-muted-foreground">
-          <span className="text-[11px] uppercase tracking-[0.22em]">
-            Everyday tools
-          </span>
-
-          {["React", "Next.js", "Tailwind CSS", "shadcn/ui"].map(
-            (technology) => (
-              <span key={technology}>{technology}</span>
-            ),
-          )}
-        </div>
-
         <section
-          id="about"
-          aria-labelledby="about-heading"
-          className="scroll-mt-8 grid gap-12 py-24 lg:grid-cols-[0.5fr_1fr] lg:gap-20 lg:py-32"
+          aria-labelledby="stack-overview-heading"
+          className="border-y border-border py-12 md:py-16"
         >
-          <div>
-            <p className="section-label">01 / About</p>
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="section-label">01 / My stack</p>
 
-            <h2
-              id="about-heading"
-              className="mt-6 text-2xl font-medium leading-snug tracking-tight sm:text-3xl"
-            >
-              Frontend by choice.
-              <br />
-              An eye for detail.
-            </h2>
-          </div>
-
-          <div className="body-copy max-w-xl space-y-5">
-            <p>
-              I focus on building clear, useful web interfaces —
-              from page layouts and reusable components to the
-              interactions that bring them to life.
-            </p>
-
-            <p>
-              My background in end-to-end web development helps
-              me understand how interfaces connect to the systems
-              behind them. Today, my focus is frontend development,
-              interface design, and user experience.
-            </p>
-
-            <p>
-              I enjoy learning new tools when they genuinely make
-              the work simpler. Away from the screen, you&apos;ll
-              find me on a trail.
-            </p>
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="stack-heading"
-          className="pb-24 lg:pb-32"
-        >
-          <div className="mb-10 flex items-end justify-between gap-4 border-b border-border pb-6">
-            <h2
-              id="stack-heading"
-              className="text-xl font-medium tracking-tight"
-            >
-              Tools & perspective
-            </h2>
-
-            <p className="hidden text-[13px] text-muted-foreground sm:block">
-              Practical tools. Thoughtful choices.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {stack.map((group) => (
-              <Card
-                key={group.title}
-                className="border-border bg-card text-card-foreground shadow-none"
+              <h2
+                id="stack-overview-heading"
+                className="mt-3 text-2xl font-medium tracking-tight sm:text-3xl"
               >
-                <CardHeader>
-                  <CardDescription className="text-[11px] uppercase tracking-[0.18em]">
-                    {group.description}
-                  </CardDescription>
+                Core stack I use to build interfaces.
+              </h2>
+            </div>
+          </div>
 
-                  <CardTitle>
-                    <h3 className="text-lg font-medium">
-                      {group.title}
-                    </h3>
-                  </CardTitle>
-                </CardHeader>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {primaryStack.map(({ name, icon: Icon }) => (
+              <div
+                key={name}
+                className="flex items-center gap-3 rounded-2xl border border-border bg-card/80 p-4 transition-colors hover:border-ring/40"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-ring">
+                  <Icon className="h-5 w-5" />
+                </span>
 
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {group.technologies.map((technology) => (
-                      <Badge
-                        key={technology}
-                        variant="outline"
-                        className="rounded-full px-3 py-1 font-normal text-secondary-foreground"
-                      >
-                        {technology}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                <span className="text-sm font-medium text-secondary-foreground">
+                  {name}
+                </span>
+              </div>
             ))}
           </div>
+
+          <div className="mt-8">
+            <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              Additional
+            </p>
+
+            <div className="flex flex-wrap gap-2">
+              {[
+                "Expo",
+                "React Native",
+                "Node.js",
+                "Vite",
+                "PostCSS",
+                "ESLint",
+                "Prettier",
+                "Framer Motion",
+                "Three.js",
+                "AI tools",
+                "UX writing",
+                "Design systems",
+                "Responsive design",
+                "Web performance",
+                "Component architecture",
+                "Testing",
+                "State management",
+                "API integration",
+                "Product thinking",
+              ].map((skill) => (
+                <span
+                  key={skill}
+                  className="rounded-full border border-border bg-muted/40 px-3 py-1.5 text-sm text-secondary-foreground"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
         </section>
 
-        <section
-          id="work"
-          aria-labelledby="work-heading"
-          className="scroll-mt-8 border-t border-border py-24 lg:py-32"
-        >
-          <p className="section-label">02 / Current work</p>
+        <div id="about" className="scroll-mt-8">
+          <section
+            id="work"
+            aria-labelledby="about-heading"
+            className="border-t border-border py-24 lg:py-32"
+          >
+          <p className="section-label">02 / About</p>
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:gap-20">
-            <h2
-              id="work-heading"
-              className="section-heading"
-            >
-              Interfaces for
-              <br />
-              real working days.
-            </h2>
+          <div className="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+            <div>
+              <h2
+                id="about-heading"
+                className="section-heading"
+              >
+                I build interfaces
+                <br />
+                for teams that need clarity.
+              </h2>
 
-            <p className="body-copy max-w-md">
-              I&apos;m building interfaces for a manufacturing
-              platform: a public website, employee dashboards,
-              reporting screens, and administration tools.
-            </p>
-          </div>
+              <div className="body-copy mt-6 space-y-5">
+                <p>
+                  I focus on frontend engineering that makes complex
+                  product flows easier to understand, easier to use,
+                  and easier to trust.
+                </p>
 
-          <Card className="mt-12 border-border bg-card text-card-foreground shadow-none">
-            <CardContent className="p-6 sm:p-10">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
-                <h3 className="text-sm font-medium">
-                  Manufacturing web platform
-                </h3>
-
-                <Badge
-                  variant="outline"
-                  className="rounded-full border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-normal uppercase tracking-wider text-ring"
-                >
-                  In development
-                </Badge>
+                <p>
+                  My work sits at the intersection of design systems,
+                  product thinking, and implementation — from reusable
+                  components to the everyday interfaces people depend on.
+                </p>
               </div>
+            </div>
 
-              <div className="mt-10 grid gap-10 md:grid-cols-3">
-                {capabilities.map((item) => (
-                  <div key={item.number}>
-                    <span className="font-mono text-[11px] text-muted-foreground">
-                      {item.number}
-                    </span>
+            <div className="space-y-4">
+              <Card className="border-border bg-card text-card-foreground shadow-none">
+                <CardHeader>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <CardTitle>Current focus</CardTitle>
 
-                    <h4 className="mt-4 text-[15px] font-medium">
-                      {item.title}
-                    </h4>
+                    <Badge
+                      variant="outline"
+                      className="rounded-full border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-normal uppercase tracking-wider text-ring"
+                    >
+                      In development
+                    </Badge>
+                  </div>
 
-                    <p className="mt-3 text-[13px] leading-7 text-muted-foreground">
-                      {item.description}
+                  <CardDescription>
+                    Manufacturing platform with public and internal experiences.
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  {leadershipSignals.map((item) => (
+                    <div key={item.title} className="rounded-xl border border-border bg-muted/30 p-4">
+                      <h3 className="text-[15px] font-medium">{item.title}</h3>
+
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                {[
+                  { label: "Public website", value: "Brand + UX" },
+                  { label: "Employee workspace", value: "Operations" },
+                  { label: "Admin tools", value: "Controls" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-xl border border-border bg-card p-4"
+                  >
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      {item.label}
+                    </p>
+
+                    <p className="mt-3 text-sm font-medium text-secondary-foreground">
+                      {item.value}
                     </p>
                   </div>
                 ))}
               </div>
-
-              <p className="mt-12 border-t border-border pt-6 text-xs leading-6 text-muted-foreground">
-                Frontend focus: interface design, reusable
-                components, and user flows across public and
-                internal areas. Source code and internal visuals
-                are confidential.
-              </p>
-            </CardContent>
-          </Card>
-        </section>
+            </div>
+          </div>
+          </section>
+        </div>
 
         <UIPlayground />
 
