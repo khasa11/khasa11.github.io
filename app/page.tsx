@@ -5,6 +5,7 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  ExternalLink,
   MessageCircle,
   Pause,
   Play,
@@ -21,6 +22,7 @@ import {
   SiHtml5,
   SiJavascript,
   SiNextdotjs,
+  SiNodedotjs,
   SiReact,
   SiShadcnui,
   SiTailwindcss,
@@ -60,18 +62,19 @@ const navigation = [
   { label: "Contact", href: "#contact" },
 ];
 
-const primaryStack: Array<{ name: string; icon: React.ComponentType<{ className?: string }> }> = [
-  { name: "React", icon: SiReact },
-  { name: "Next.js", icon: SiNextdotjs },
-  { name: "TypeScript", icon: SiTypescript },
-  { name: "JavaScript", icon: SiJavascript },
-  { name: "Tailwind CSS", icon: SiTailwindcss },
-  { name: "shadcn/ui", icon: SiShadcnui },
-  { name: "HTML", icon: SiHtml5 },
-  { name: "CSS", icon: SiCss },
-  { name: "Git", icon: SiGit },
-  { name: "GitHub", icon: SiGithub },
-  { name: "Figma", icon: SiFigma },
+const primaryStack: Array<{ name: string; link: string; icon: React.ComponentType<{ className?: string }> }> = [
+  { name: "Node.js", link: "https://nodejs.org", icon: SiNodedotjs },
+  { name: "React", link: "https://reactjs.org", icon: SiReact },
+  { name: "Next.js", link: "https://nextjs.org", icon: SiNextdotjs },
+  { name: "TypeScript", link: "https://typescriptlang.org", icon: SiTypescript },
+  { name: "JavaScript", link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", icon: SiJavascript },
+  { name: "Tailwind CSS", link: "https://tailwindcss.com", icon: SiTailwindcss },
+  { name: "shadcn/ui", link: "https://ui.shadcn.com", icon: SiShadcnui },
+  { name: "HTML", link: "https://developer.mozilla.org/en-US/docs/Web/HTML", icon: SiHtml5 },
+  { name: "CSS", link: "https://developer.mozilla.org/en-US/docs/Web/CSS", icon: SiCss },
+  { name: "Git", link: "https://git-scm.com", icon: SiGit },
+  { name: "GitHub", link: "https://github.com", icon: SiGithub },
+  { name: "Figma", link: "https://figma.com", icon: SiFigma },
 ];
 
 const leadershipSignals = [
@@ -423,7 +426,7 @@ export default function Home() {
         Skip to content
       </a>
 
-      <header className="relative z-20 border-b border-border">
+      <header className="absolute inset-x-0 top-0 z-20 border-b border-border bg-background/35 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-6 sm:px-8">
           <a
             href="#top"
@@ -454,7 +457,7 @@ export default function Home() {
         id="main-content"
         aria-labelledby="hero-heading"
         tabIndex={-1}
-        className="relative isolate flex min-h-[calc(100svh-5.25rem)] w-full flex-col items-center justify-center px-5 py-24 text-center sm:px-8"
+        className="relative isolate flex min-h-svh w-full flex-col items-center justify-center px-5 py-24 text-center sm:px-8"
       >
         <HeroBackground />
 
@@ -518,7 +521,7 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {primaryStack.map(({ name, icon: Icon }) => (
+            {primaryStack.map(({ name, link, icon: Icon }) => (
               <div
                 key={name}
                 className="flex items-center gap-3 rounded-2xl border border-border bg-card/80 p-4 transition-colors hover:border-ring/40"
@@ -530,6 +533,17 @@ export default function Home() {
                 <span className="text-sm font-medium text-secondary-foreground">
                   {name}
                 </span>
+
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit ${name} website`}
+                  title={`Open ${name} website`}
+                  className="ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-border text-secondary-foreground transition-colors hover:border-ring/40 hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  <ExternalLink className="size-4" aria-hidden="true" />
+                </a>
               </div>
             ))}
           </div>
@@ -542,24 +556,12 @@ export default function Home() {
             <div className="flex flex-wrap gap-2">
               {[
                 "Expo",
-                "React Native",
-                "Node.js",
-                "Vite",
-                "PostCSS",
-                "ESLint",
-                "Prettier",
-                "Framer Motion",
                 "Three.js",
-                "AI tools",
-                "UX writing",
-                "Design systems",
-                "Responsive design",
-                "Web performance",
-                "Component architecture",
-                "Testing",
-                "State management",
-                "API integration",
-                "Product thinking",
+                "UX/UI",
+                "API",
+                "DeepSeek",
+                "ChatGPT",
+                "Perplexity",
               ].map((skill) => (
                 <span
                   key={skill}
