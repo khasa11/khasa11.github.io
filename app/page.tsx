@@ -457,7 +457,7 @@ export default function Home() {
         id="main-content"
         aria-labelledby="hero-heading"
         tabIndex={-1}
-        className="relative isolate flex min-h-svh w-full flex-col items-center justify-center px-5 py-24 text-center sm:px-8"
+        className="relative isolate flex min-h-svh w-full flex-col items-center justify-center px-5 py-20 text-center sm:px-8 md:py-24"
       >
         <HeroBackground />
 
@@ -505,7 +505,7 @@ export default function Home() {
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <section
           aria-labelledby="stack-overview-heading"
-          className="border-y border-border py-12 md:py-16"
+          className="border-y border-border py-20 md:py-24"
         >
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
@@ -578,7 +578,7 @@ export default function Home() {
           <section
             id="work"
             aria-labelledby="about-heading"
-            className="border-t border-border py-24 lg:py-32"
+            className="border-t border-border py-20 md:py-24"
           >
           <p className="section-label">02 / About</p>
 
@@ -670,7 +670,7 @@ export default function Home() {
         <section
           id="contact"
           aria-labelledby="contact-heading"
-          className="scroll-mt-8 border-t border-border py-24 lg:py-32"
+          className="scroll-mt-8 border-border py-20 md:py-24"
         >
           <p className="section-label">04 / Contact</p>
 
