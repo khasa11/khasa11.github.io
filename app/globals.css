@@ -62,6 +62,8 @@
 .dark {
   color-scheme: dark;
 
+  --font-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
   --background: #000;
   --foreground: #f5f5f7;
 
