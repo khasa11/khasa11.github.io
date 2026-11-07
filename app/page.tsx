@@ -29,7 +29,6 @@ import {
   SiTypescript,
 } from "react-icons/si";
 
-import AnimatedGradient from "@/components/ui/animated-gradient";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -96,30 +95,105 @@ const leadershipSignals = [
 ];
 
 function HeroBackground() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !context) return;
+
+    const characters = " .:-=+*#%@";
+    const cellWidth = 12;
+    const cellHeight = 19;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    let width = 0;
+    let height = 0;
+    let animationFrame = 0;
+    let lastFrame = 0;
+
+    const resize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = bounds.width;
+      height = bounds.height;
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    };
+
+    const draw = (time: number) => {
+      if (time - lastFrame < 42) {
+        animationFrame = window.requestAnimationFrame(draw);
+        return;
+      }
+
+      lastFrame = time;
+      context.clearRect(0, 0, width, height);
+      context.font = "12px monospace";
+      context.textBaseline = "top";
+
+      const columns = Math.ceil(width / cellWidth);
+      const rows = Math.ceil(height / cellHeight);
+      const phase = time * 0.00035;
+
+      for (let row = 0; row < rows; row += 1) {
+        for (let column = 0; column < columns; column += 1) {
+          const wave =
+            (Math.sin(column * 0.12 + row * 0.19 - phase) +
+              Math.cos(column * 0.07 - row * 0.14 + phase * 1.3) +
+              2) /
+            4;
+          const fadeX = Math.max(0, Math.min(1, (column / columns - 0.12) * 2.2));
+          const fadeY = 1 - (row / rows) * 0.35;
+          const intensity = wave * fadeX * fadeY;
+
+          if (intensity < 0.3) continue;
+
+          const characterIndex = Math.min(
+            characters.length - 1,
+            Math.floor(intensity * characters.length),
+          );
+          context.fillStyle = `rgba(220, 220, 214, ${0.04 + intensity * 0.15})`;
+          context.fillText(
+            characters[characterIndex],
+            column * cellWidth,
+            row * cellHeight,
+          );
+        }
+      }
+
+      if (!reducedMotion) {
+        animationFrame = window.requestAnimationFrame(draw);
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+      draw(performance.now());
+    });
+
+    resize();
+    resizeObserver.observe(canvas);
+    draw(reducedMotion ? 0 : performance.now());
+
+    if (!reducedMotion) {
+      animationFrame = window.requestAnimationFrame(draw);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="ascii-field pointer-events-none absolute inset-0 overflow-hidden"
     >
-      <AnimatedGradient
-        config={{ preset: "Prism", speed: 30 }}
-        noise={{ opacity: 0.18, scale: 1.2 }}
-        style={{
-          filter: "saturate(1.35) contrast(1.1) brightness(1.05)",
-        }}
-      />
-
-      <div className="hero-vignette absolute inset-0" />
-
-      <div className="absolute left-1/2 top-1/2 h-[40rem] w-[40rem] -translate-x-1/2 -translate-y-1/2">
-        <div className="hero-glow h-full w-full rounded-full bg-ring/10 blur-[150px]" />
-      </div>
-
-      <div className="hero-orb absolute left-[18%] top-[24%] h-72 w-72 rounded-full bg-primary/10 blur-[130px]" />
-
-      <div className="hero-orb hero-orb-slow absolute bottom-[20%] right-[14%] h-80 w-80 rounded-full bg-primary/5 blur-[140px]" />
-
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
+      <canvas ref={canvasRef} className="ascii-canvas absolute inset-0 size-full" />
     </div>
   );
 }
@@ -417,7 +491,7 @@ export default function Home() {
   return (
     <main
       id="top"
-      className="min-h-screen overflow-x-hidden bg-background text-foreground"
+      className="portfolio-page min-h-screen overflow-x-hidden bg-background text-foreground"
     >
       <a
         href="#main-content"
@@ -426,14 +500,14 @@ export default function Home() {
         Skip to content
       </a>
 
-      <header className="absolute inset-x-0 top-0 z-20 border-b border-border bg-background/35 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-6 sm:px-8">
+      <header className="site-header relative z-20 border-b border-border">
+        <div className="masthead mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-5 px-5 py-5 sm:px-8">
           <a
             href="#top"
-            aria-label="Khasa — home"
-            className="text-base font-medium tracking-tight"
+            aria-label="Khasa Studio — home"
+            className="masthead-brand text-base font-semibold"
           >
-            khasa<span className="text-ring">.</span>
+            [KHASA STUDIO]
           </a>
 
           <nav
@@ -457,33 +531,33 @@ export default function Home() {
         id="main-content"
         aria-labelledby="hero-heading"
         tabIndex={-1}
-        className="relative isolate flex min-h-svh w-full flex-col items-center justify-center px-5 py-20 text-center sm:px-8 md:py-24"
+        className="hero-section relative isolate flex min-h-[78svh] w-full flex-col justify-end pb-12 pt-28 sm:pb-16"
       >
         <HeroBackground />
 
-        <div className="relative z-10 flex max-w-3xl flex-col items-center">
-          <p className="hero-reveal mb-8 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
-            Frontend Engineer
+        <div className="hero-copy relative z-10 mx-auto flex w-full max-w-6xl flex-col items-start px-5 sm:px-8">
+          <p className="hero-reveal hero-kicker mb-6 text-[11px] font-medium uppercase text-muted-foreground">
+            Independent developer / Portfolio 2026
           </p>
 
           <h1
             id="hero-heading"
-            className="hero-reveal hero-reveal-1 text-[2.75rem] font-medium leading-[1.06] tracking-[-0.045em] sm:text-6xl lg:text-[5.25rem]"
+            className="hero-reveal hero-reveal-1 hero-title text-5xl font-semibold leading-[0.98] sm:text-7xl lg:text-8xl"
           >
-            Clean interfaces.
+            Interfaces
             <br />
-            <span className="text-ring">
-              Thoughtful details.
+            <span>
+              with intent.
             </span>
           </h1>
 
-          <p className="hero-reveal hero-reveal-2 mt-8 max-w-lg text-[15px] leading-7 text-muted-foreground">
+          <p className="hero-reveal hero-reveal-2 mt-7 max-w-lg text-[15px] leading-7 text-muted-foreground">
             I&apos;m Rishat Khasanov. I build web interfaces with
             React and Next.js, combining frontend development with
             an eye for design and user experience.
           </p>
 
-          <div className="hero-reveal hero-reveal-3 mt-10 flex flex-wrap items-center justify-center gap-3">
+          <div className="hero-reveal hero-reveal-3 mt-8 flex flex-wrap items-center gap-3">
             <a
               href="#work"
               className="pill-link pill-link-primary"
@@ -499,13 +573,20 @@ export default function Home() {
               Get in touch
             </a>
           </div>
+
+          <div className="hero-meta mt-12 grid w-full grid-cols-2 gap-4 border-t border-border pt-4 text-[10px] uppercase text-muted-foreground sm:grid-cols-4">
+            <span>Based in Russia</span>
+            <span>Available for select projects</span>
+            <span>Frontend / UI engineering</span>
+            <span className="sm:text-right">№ 001 — 2026</span>
+          </div>
         </div>
       </section>
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <section
           aria-labelledby="stack-overview-heading"
-          className="border-y border-border py-20 md:py-24"
+            className="border-b border-border py-20 md:py-24"
         >
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
