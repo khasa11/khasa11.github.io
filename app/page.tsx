@@ -5,7 +5,12 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  Cloud,
+  Database,
   ExternalLink,
+  FileText,
+  KeyRound,
+  Mail,
   MessageCircle,
   Pause,
   Play,
@@ -16,6 +21,10 @@ import {
 } from "lucide-react";
 import {
   SiCss,
+  SiCaddy,
+  SiDeepseek,
+  SiDocker,
+  SiExpo,
   SiFigma,
   SiGit,
   SiGithub,
@@ -23,10 +32,18 @@ import {
   SiJavascript,
   SiNextdotjs,
   SiNodedotjs,
+  SiMinio,
+  SiPostgresql,
+  SiPerplexity,
+  SiPrisma,
   SiReact,
+  SiReacthookform,
   SiShadcnui,
+  SiTanstack,
   SiTailwindcss,
+  SiThreedotjs,
   SiTypescript,
+  SiZod,
 } from "react-icons/si";
 
 import { Badge } from "@/components/ui/badge";
@@ -54,26 +71,87 @@ import {
   MessageGroup,
 } from "@/components/ui/message";
 
-const navigation = [
-  { label: "About", href: "#about" },
-  { label: "Work", href: "#work" },
-  { label: "Playground", href: "#playground" },
-  { label: "Contact", href: "#contact" },
+const heroSections = [
+  { number: "00", label: "Intro", href: "#main-content" },
+  { number: "01", label: "Technologies", href: "#stack-overview-heading" },
+  { number: "02", label: "About", href: "#about" },
+  { number: "03", label: "UI Playground", href: "#playground" },
+  { number: "04", label: "Contact", href: "#contact" },
 ];
 
-const primaryStack: Array<{ name: string; link: string; icon: React.ComponentType<{ className?: string }> }> = [
-  { name: "Node.js", link: "https://nodejs.org", icon: SiNodedotjs },
-  { name: "React", link: "https://reactjs.org", icon: SiReact },
-  { name: "Next.js", link: "https://nextjs.org", icon: SiNextdotjs },
-  { name: "TypeScript", link: "https://typescriptlang.org", icon: SiTypescript },
-  { name: "JavaScript", link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", icon: SiJavascript },
-  { name: "Tailwind CSS", link: "https://tailwindcss.com", icon: SiTailwindcss },
-  { name: "shadcn/ui", link: "https://ui.shadcn.com", icon: SiShadcnui },
-  { name: "HTML", link: "https://developer.mozilla.org/en-US/docs/Web/HTML", icon: SiHtml5 },
-  { name: "CSS", link: "https://developer.mozilla.org/en-US/docs/Web/CSS", icon: SiCss },
-  { name: "Git", link: "https://git-scm.com", icon: SiGit },
-  { name: "GitHub", link: "https://github.com", icon: SiGithub },
-  { name: "Figma", link: "https://figma.com", icon: SiFigma },
+type StackItem = {
+  name: string;
+  link: string;
+  icon: React.ComponentType<{ className?: string }>;
+  color: string;
+};
+
+const stackCategories: Array<{ name: string; items: StackItem[] }> = [
+  {
+    name: "Frontend",
+    items: [
+      { name: "React", link: "https://reactjs.org", icon: SiReact, color: "#61DAFB" },
+      { name: "React Hook Form", link: "https://react-hook-form.com", icon: SiReacthookform, color: "#EC5990" },
+      { name: "TanStack Query", link: "https://tanstack.com/query", icon: SiTanstack, color: "#FF4154" },
+      { name: "Next.js", link: "https://nextjs.org", icon: SiNextdotjs, color: "#F5F5F5" },
+      { name: "Tailwind CSS", link: "https://tailwindcss.com", icon: SiTailwindcss, color: "#06B6D4" },
+      { name: "shadcn/ui", link: "https://ui.shadcn.com", icon: SiShadcnui, color: "#F5F5F5" },
+      { name: "@react-pdf/renderer", link: "https://react-pdf.org", icon: FileText, color: "#FF5757" },
+      { name: "HTML", link: "https://developer.mozilla.org/en-US/docs/Web/HTML", icon: SiHtml5, color: "#E34F26" },
+      { name: "CSS", link: "https://developer.mozilla.org/en-US/docs/Web/CSS", icon: SiCss, color: "#1572B6" },
+    ],
+  },
+  {
+    name: "Languages",
+    items: [
+      { name: "TypeScript", link: "https://typescriptlang.org", icon: SiTypescript, color: "#3178C6" },
+      { name: "JavaScript", link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", icon: SiJavascript, color: "#F0DB4F" },
+    ],
+  },
+  {
+    name: "Backend",
+    items: [
+      { name: "Node.js", link: "https://nodejs.org", icon: SiNodedotjs, color: "#539E43" },
+      { name: "NextAuth.js", link: "https://authjs.dev", icon: KeyRound, color: "#E8E8E8" },
+      { name: "Zod", link: "https://zod.dev", icon: SiZod, color: "#3E67B1" },
+      { name: "Nodemailer", link: "https://nodemailer.com", icon: Mail, color: "#22A6B3" },
+    ],
+  },
+  {
+    name: "Databases",
+    items: [
+      { name: "PostgreSQL", link: "https://www.postgresql.org", icon: SiPostgresql, color: "#4169E1" },
+      { name: "Oracle", link: "https://www.oracle.com/database/", icon: Database, color: "#F80000" },
+      { name: "Prisma", link: "https://www.prisma.io", icon: SiPrisma, color: "#7D9BF5" },
+    ],
+  },
+  {
+    name: "Mobile & 3D",
+    items: [
+      { name: "Expo", link: "https://expo.dev", icon: SiExpo, color: "#F5F5F5" },
+      { name: "Three.js", link: "https://threejs.org", icon: SiThreedotjs, color: "#F5F5F5" },
+    ],
+  },
+  {
+    name: "Infrastructure & Storage",
+    items: [
+      { name: "Docker", link: "https://www.docker.com", icon: SiDocker, color: "#2496ED" },
+      { name: "Caddy", link: "https://caddyserver.com", icon: SiCaddy, color: "#1F88C0" },
+      { name: "MinIO", link: "https://min.io", icon: SiMinio, color: "#C72C48" },
+      { name: "@aws-sdk/client-s3", link: "https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/", icon: Cloud, color: "#FF9900" },
+    ],
+  },
+  {
+    name: "Tools & AI",
+    items: [
+      { name: "Git", link: "https://git-scm.com", icon: SiGit, color: "#F05032" },
+      { name: "GitHub", link: "https://github.com", icon: SiGithub, color: "#F0F6FC" },
+      { name: "Figma", link: "https://figma.com", icon: SiFigma, color: "#F24E1E" },
+      { name: "DeepSeek", link: "https://www.deepseek.com", icon: SiDeepseek, color: "#4D6BFE" },
+      { name: "ChatGPT", link: "https://chatgpt.com", icon: MessageCircle, color: "#74AA9C" },
+      { name: "Perplexity", link: "https://www.perplexity.ai", icon: SiPerplexity, color: "#20B8CD" },
+    ],
+  },
 ];
 
 const leadershipSignals = [
@@ -257,6 +335,7 @@ function UIPlayground() {
   return (
     <section
       id="playground"
+      data-nav-section="#playground"
       aria-labelledby="playground-heading"
       className="relative left-1/2 isolate w-screen -translate-x-1/2 scroll-mt-8 border-y border-border py-24 lg:py-32"
     >
@@ -488,10 +567,66 @@ function UIPlayground() {
 }
 
 export default function Home() {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sectionTargets = heroSections.flatMap(({ href }) => {
+      const anchor = document.getElementById(href.slice(1));
+      const element = anchor?.closest("section") ?? anchor;
+      return element ? [{ href, element }] : [];
+    });
+
+    let animationFrame = 0;
+    const updateActiveSection = () => {
+      const activationLine = window.innerHeight * 0.4;
+      let currentSection: string | null = null;
+
+      for (const { href, element } of sectionTargets) {
+        if (element.getBoundingClientRect().top > activationLine) break;
+        currentSection = href;
+      }
+
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 1
+      ) {
+        currentSection = heroSections[heroSections.length - 1].href;
+      }
+
+      setActiveSection(currentSection);
+    };
+
+    const scheduleUpdate = () => {
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = 0;
+        updateActiveSection();
+      });
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
   return (
     <main
       id="top"
       className="portfolio-page min-h-screen overflow-x-hidden bg-background text-foreground"
+      onPointerMove={(event) => {
+        if (event.pointerType !== "mouse") return;
+        const target = event.target instanceof Element
+          ? event.target.closest<HTMLElement>("[data-nav-section]")
+          : null;
+        const section = target?.dataset.navSection;
+        if (section) setActiveSection(section);
+      }}
     >
       <a
         href="#main-content"
@@ -510,25 +645,64 @@ export default function Home() {
             [KHASA STUDIO]
           </a>
 
-          <nav
-            aria-label="Main navigation"
-            className="flex flex-wrap gap-4 text-xs text-muted-foreground sm:gap-8 sm:text-[13px]"
-          >
-            {navigation.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </a>
-            ))}
+          <nav aria-label="Primary actions" className="flex items-center gap-2">
+            <a
+              href="https://github.com/khasa11"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-10 items-center justify-center gap-2 border border-border px-4 text-xs font-medium text-secondary-foreground transition-colors hover:border-ring/40 hover:bg-muted hover:text-foreground"
+            >
+              GitHub
+              <ExternalLink className="size-3.5" aria-hidden="true" />
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex min-h-10 items-center justify-center bg-primary px-4 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Contact
+            </a>
           </nav>
         </div>
       </header>
 
+      <nav
+        aria-label="Page sections"
+        className="hero-reveal fixed left-16 top-1/2 z-50 hidden w-auto -translate-y-1/2 2xl:block"
+      >
+        <p className="hero-kicker text-[10px] font-medium uppercase text-muted-foreground">
+          Navigation
+        </p>
+        <ol className="mt-3 flex flex-col gap-3">
+          {heroSections.map((item) => {
+            const isActive = activeSection === item.href;
+
+            return (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  aria-current={isActive ? "location" : undefined}
+                  className={`group flex items-center gap-2 text-xs transition-colors ${isActive ? "font-medium text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <span
+                    className={`font-mono text-[10px] transition-colors ${isActive ? "text-foreground" : "text-muted-foreground/60 group-hover:text-foreground"}`}
+                  >
+                    {item.number}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className={`h-px w-3 transition-colors ${isActive ? "bg-foreground" : "bg-transparent group-hover:bg-muted-foreground"}`}
+                  />
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
       <section
         id="main-content"
+        data-nav-section="#main-content"
         aria-labelledby="hero-heading"
         tabIndex={-1}
         className="hero-section relative isolate flex min-h-[78svh] w-full flex-col justify-end pb-12 pt-28 sm:pb-16"
@@ -536,42 +710,36 @@ export default function Home() {
         <HeroBackground />
 
         <div className="hero-copy relative z-10 mx-auto flex w-full max-w-6xl flex-col items-start px-5 sm:px-8">
-          <p className="hero-reveal hero-kicker mb-6 text-[11px] font-medium uppercase text-muted-foreground">
-            Independent developer / Portfolio 2026
-          </p>
+          <div>
+            <p className="hero-reveal hero-kicker mb-6 text-[11px] font-medium uppercase text-muted-foreground">
+              Frontend developer / Portfolio 2026
+            </p>
 
-          <h1
-            id="hero-heading"
-            className="hero-reveal hero-reveal-1 hero-title text-5xl font-semibold leading-[0.98] sm:text-7xl lg:text-8xl"
-          >
-            Interfaces
-            <br />
-            <span>
-              with intent.
-            </span>
-          </h1>
-
-          <p className="hero-reveal hero-reveal-2 mt-7 max-w-lg text-[15px] leading-7 text-muted-foreground">
-            I&apos;m Rishat Khasanov. I build web interfaces with
-            React and Next.js, combining frontend development with
-            an eye for design and user experience.
-          </p>
-
-          <div className="hero-reveal hero-reveal-3 mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href="#work"
-              className="pill-link pill-link-primary"
+            <h1
+              id="hero-heading"
+              className="hero-reveal hero-reveal-1 hero-title text-5xl font-semibold leading-[0.98] sm:text-7xl lg:text-8xl"
             >
-              View work
-              <span aria-hidden="true">↗</span>
-            </a>
+              Frontend
+              <br />
+              <span>with intent.</span>
+            </h1>
 
-            <a
-              href="#contact"
-              className="pill-link pill-link-secondary"
-            >
-              Get in touch
-            </a>
+            <p className="hero-reveal hero-reveal-2 mt-7 max-w-lg text-[15px] leading-7 text-muted-foreground">
+              I&apos;m Rishat Khasanov, a frontend developer focused on React and
+              Next.js. I build responsive interfaces and work across the wider
+              stack to bring products from design to delivery.
+            </p>
+
+            <div className="hero-reveal hero-reveal-3 mt-8 flex flex-wrap items-center gap-3">
+              <a href="#work" className="pill-link pill-link-primary">
+                View work
+                <span aria-hidden="true">↗</span>
+              </a>
+
+              <a href="#contact" className="pill-link pill-link-secondary">
+                Get in touch
+              </a>
+            </div>
           </div>
 
           <div className="hero-meta mt-12 grid w-full grid-cols-2 gap-4 border-t border-border pt-4 text-[10px] uppercase text-muted-foreground sm:grid-cols-4">
@@ -585,79 +753,73 @@ export default function Home() {
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <section
+          data-nav-section="#stack-overview-heading"
           aria-labelledby="stack-overview-heading"
             className="border-b border-border py-20 md:py-24"
         >
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="section-label">01 / My stack</p>
+              <p className="section-label">01 / Technologies I use</p>
 
               <h2
                 id="stack-overview-heading"
                 className="mt-3 text-2xl font-medium tracking-tight sm:text-3xl"
               >
-                Core stack I use to build interfaces.
+                Frontend is my focus. This is the wider toolkit I apply across projects.
               </h2>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {primaryStack.map(({ name, link, icon: Icon }) => (
-              <div
-                key={name}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-card/80 p-4 transition-colors hover:border-ring/40"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-ring">
-                  <Icon className="h-5 w-5" />
-                </span>
+          <div className="space-y-8">
+            {stackCategories.map(({ name: category, items }) => (
+              <div key={category}>
+                <h3 className="mb-4 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                  {category}
+                </h3>
 
-                <span className="text-sm font-medium text-secondary-foreground">
-                  {name}
-                </span>
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                  {items.map(({ name, link, icon: Icon, color }) => (
+                    <div
+                      key={name}
+                      className="flex items-center gap-3 rounded-2xl border border-border bg-card/80 p-4 transition-colors hover:border-ring/40"
+                    >
+                      <span
+                        className="flex h-10 w-10 items-center justify-center rounded-xl"
+                        style={{
+                          color,
+                          backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)`,
+                        }}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </span>
 
-                <a
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Visit ${name} website`}
-                  title={`Open ${name} website`}
-                  className="ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-border text-secondary-foreground transition-colors hover:border-ring/40 hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                >
-                  <ExternalLink className="size-4" aria-hidden="true" />
-                </a>
+                      <span className="text-sm font-medium text-secondary-foreground">
+                        {name}
+                      </span>
+
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Visit ${name} website`}
+                        title={`Open ${name} website`}
+                        className="ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-border text-secondary-foreground transition-colors hover:border-ring/40 hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                      >
+                        <ExternalLink className="size-4" aria-hidden="true" />
+                      </a>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-8">
-            <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              Additional
-            </p>
-
-            <div className="flex flex-wrap gap-2">
-              {[
-                "Expo",
-                "Three.js",
-                "UX/UI",
-                "API",
-                "DeepSeek",
-                "ChatGPT",
-                "Perplexity",
-              ].map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-full border border-border bg-muted/40 px-3 py-1.5 text-sm text-secondary-foreground"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
         </section>
 
         <div id="about" className="scroll-mt-8">
           <section
             id="work"
+            data-nav-section="#about"
             aria-labelledby="about-heading"
             className="border-t border-border py-20 md:py-24"
           >
@@ -669,9 +831,9 @@ export default function Home() {
                 id="about-heading"
                 className="section-heading"
               >
-                I build interfaces
+                Frontend engineering
                 <br />
-                for teams that need clarity.
+                with a product mindset.
               </h2>
 
               <div className="body-copy mt-6 space-y-5">
@@ -750,6 +912,7 @@ export default function Home() {
 
         <section
           id="contact"
+          data-nav-section="#contact"
           aria-labelledby="contact-heading"
           className="scroll-mt-8 border-border py-20 md:py-24"
         >
