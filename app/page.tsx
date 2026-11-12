@@ -70,6 +70,11 @@ import {
   MessageContent,
   MessageGroup,
 } from "@/components/ui/message";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
 
 const heroSections = [
   { number: "00", label: "Intro", href: "#main-content" },
@@ -82,6 +87,7 @@ const heroSections = [
 type StackItem = {
   name: string;
   link: string;
+  description: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
 };
@@ -90,66 +96,66 @@ const stackCategories: Array<{ name: string; items: StackItem[] }> = [
   {
     name: "Frontend",
     items: [
-      { name: "React", link: "https://reactjs.org", icon: SiReact, color: "#61DAFB" },
-      { name: "React Hook Form", link: "https://react-hook-form.com", icon: SiReacthookform, color: "#EC5990" },
-      { name: "TanStack Query", link: "https://tanstack.com/query", icon: SiTanstack, color: "#FF4154" },
-      { name: "Next.js", link: "https://nextjs.org", icon: SiNextdotjs, color: "#F5F5F5" },
-      { name: "Tailwind CSS", link: "https://tailwindcss.com", icon: SiTailwindcss, color: "#06B6D4" },
-      { name: "shadcn/ui", link: "https://ui.shadcn.com", icon: SiShadcnui, color: "#F5F5F5" },
-      { name: "@react-pdf/renderer", link: "https://react-pdf.org", icon: FileText, color: "#FF5757" },
-      { name: "HTML", link: "https://developer.mozilla.org/en-US/docs/Web/HTML", icon: SiHtml5, color: "#E34F26" },
-      { name: "CSS", link: "https://developer.mozilla.org/en-US/docs/Web/CSS", icon: SiCss, color: "#1572B6" },
+      { name: "React", link: "https://reactjs.org", description: "Builds interactive user interfaces from reusable components.", icon: SiReact, color: "#61DAFB" },
+      { name: "React Hook Form", link: "https://react-hook-form.com", description: "Manages form state and validation with minimal re-renders.", icon: SiReacthookform, color: "#EC5990" },
+      { name: "TanStack Query", link: "https://tanstack.com/query", description: "Fetches, caches, and updates server data in the UI.", icon: SiTanstack, color: "#FF4154" },
+      { name: "Next.js", link: "https://nextjs.org", description: "A React framework for routing, rendering, and full-stack web apps.", icon: SiNextdotjs, color: "#F5F5F5" },
+      { name: "Tailwind CSS", link: "https://tailwindcss.com", description: "Styles interfaces with composable utility classes.", icon: SiTailwindcss, color: "#06B6D4" },
+      { name: "shadcn/ui", link: "https://ui.shadcn.com", description: "A collection of accessible, customizable interface components.", icon: SiShadcnui, color: "#F5F5F5" },
+      { name: "@react-pdf/renderer", link: "https://react-pdf.org", description: "Creates PDF documents using React components.", icon: FileText, color: "#FF5757" },
+      { name: "HTML", link: "https://developer.mozilla.org/en-US/docs/Web/HTML", description: "Structures content on the web.", icon: SiHtml5, color: "#E34F26" },
+      { name: "CSS", link: "https://developer.mozilla.org/en-US/docs/Web/CSS", description: "Controls the layout and visual styling of web pages.", icon: SiCss, color: "#1572B6" },
     ],
   },
   {
     name: "Languages",
     items: [
-      { name: "TypeScript", link: "https://typescriptlang.org", icon: SiTypescript, color: "#3178C6" },
-      { name: "JavaScript", link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", icon: SiJavascript, color: "#F0DB4F" },
+      { name: "TypeScript", link: "https://typescriptlang.org", description: "Adds static types to JavaScript for safer development.", icon: SiTypescript, color: "#3178C6" },
+      { name: "JavaScript", link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", description: "Powers interactive behavior across web applications.", icon: SiJavascript, color: "#F0DB4F" },
     ],
   },
   {
     name: "Backend",
     items: [
-      { name: "Node.js", link: "https://nodejs.org", icon: SiNodedotjs, color: "#539E43" },
-      { name: "NextAuth.js", link: "https://authjs.dev", icon: KeyRound, color: "#E8E8E8" },
-      { name: "Zod", link: "https://zod.dev", icon: SiZod, color: "#3E67B1" },
-      { name: "Nodemailer", link: "https://nodemailer.com", icon: Mail, color: "#22A6B3" },
+      { name: "Node.js", link: "https://nodejs.org", description: "Runs JavaScript outside the browser, including on servers.", icon: SiNodedotjs, color: "#539E43" },
+      { name: "NextAuth.js", link: "https://authjs.dev", description: "Adds authentication and session management to web apps.", icon: KeyRound, color: "#E8E8E8" },
+      { name: "Zod", link: "https://zod.dev", description: "Validates data with schemas and infers TypeScript types.", icon: SiZod, color: "#3E67B1" },
+      { name: "Nodemailer", link: "https://nodemailer.com", description: "Sends email from Node.js applications.", icon: Mail, color: "#22A6B3" },
     ],
   },
   {
     name: "Databases",
     items: [
-      { name: "PostgreSQL", link: "https://www.postgresql.org", icon: SiPostgresql, color: "#4169E1" },
-      { name: "Oracle", link: "https://www.oracle.com/database/", icon: Database, color: "#F80000" },
-      { name: "Prisma", link: "https://www.prisma.io", icon: SiPrisma, color: "#7D9BF5" },
+      { name: "PostgreSQL", link: "https://www.postgresql.org", description: "Stores and queries relational application data.", icon: SiPostgresql, color: "#4169E1" },
+      { name: "Oracle", link: "https://www.oracle.com/database/", description: "An enterprise relational database for storing and querying data.", icon: Database, color: "#F80000" },
+      { name: "Prisma", link: "https://www.prisma.io", description: "Provides a type-safe ORM for working with databases.", icon: SiPrisma, color: "#7D9BF5" },
     ],
   },
   {
     name: "Mobile & 3D",
     items: [
-      { name: "Expo", link: "https://expo.dev", icon: SiExpo, color: "#F5F5F5" },
-      { name: "Three.js", link: "https://threejs.org", icon: SiThreedotjs, color: "#F5F5F5" },
+      { name: "Expo", link: "https://expo.dev", description: "Builds and ships React Native apps across platforms.", icon: SiExpo, color: "#F5F5F5" },
+      { name: "Three.js", link: "https://threejs.org", description: "Creates and renders 3D graphics in the browser.", icon: SiThreedotjs, color: "#F5F5F5" },
     ],
   },
   {
     name: "Infrastructure & Storage",
     items: [
-      { name: "Docker", link: "https://www.docker.com", icon: SiDocker, color: "#2496ED" },
-      { name: "Caddy", link: "https://caddyserver.com", icon: SiCaddy, color: "#1F88C0" },
-      { name: "MinIO", link: "https://min.io", icon: SiMinio, color: "#C72C48" },
-      { name: "@aws-sdk/client-s3", link: "https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/", icon: Cloud, color: "#FF9900" },
+      { name: "Docker", link: "https://www.docker.com", description: "Packages applications and dependencies into containers.", icon: SiDocker, color: "#2496ED" },
+      { name: "Caddy", link: "https://caddyserver.com", description: "Serves websites and manages HTTPS automatically.", icon: SiCaddy, color: "#1F88C0" },
+      { name: "MinIO", link: "https://min.io", description: "Provides S3-compatible object storage.", icon: SiMinio, color: "#C72C48" },
+      { name: "@aws-sdk/client-s3", link: "https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/", description: "Connects applications to Amazon S3 for object storage.", icon: Cloud, color: "#FF9900" },
     ],
   },
   {
     name: "Tools & AI",
     items: [
-      { name: "Git", link: "https://git-scm.com", icon: SiGit, color: "#F05032" },
-      { name: "GitHub", link: "https://github.com", icon: SiGithub, color: "#F0F6FC" },
-      { name: "Figma", link: "https://figma.com", icon: SiFigma, color: "#F24E1E" },
-      { name: "DeepSeek", link: "https://www.deepseek.com", icon: SiDeepseek, color: "#4D6BFE" },
-      { name: "ChatGPT", link: "https://chatgpt.com", icon: MessageCircle, color: "#74AA9C" },
-      { name: "Perplexity", link: "https://www.perplexity.ai", icon: SiPerplexity, color: "#20B8CD" },
+      { name: "Git", link: "https://git-scm.com", description: "Tracks code changes and supports collaborative workflows.", icon: SiGit, color: "#F05032" },
+      { name: "GitHub", link: "https://github.com", description: "Hosts Git repositories and tools for code collaboration.", icon: SiGithub, color: "#F0F6FC" },
+      { name: "Figma", link: "https://figma.com", description: "Designs and prototypes interfaces collaboratively.", icon: SiFigma, color: "#F24E1E" },
+      { name: "DeepSeek", link: "https://www.deepseek.com", description: "AI assistant for research, reasoning, and coding tasks.", icon: SiDeepseek, color: "#4D6BFE" },
+      { name: "ChatGPT", link: "https://chatgpt.com", description: "AI assistant for writing, analysis, and problem-solving.", icon: MessageCircle, color: "#74AA9C" },
+      { name: "Perplexity", link: "https://www.perplexity.ai", description: "AI-powered search that answers questions with sources.", icon: SiPerplexity, color: "#20B8CD" },
     ],
   },
 ];
@@ -385,7 +391,7 @@ function UIPlayground() {
         >
           <CarouselContent className="-ml-5">
             <CarouselItem className="basis-full pl-5 md:basis-[70%] xl:basis-1/2">
-              <Card className="h-full min-h-[510px] overflow-hidden border-border bg-card shadow-none">
+              <Card className="h-full min-h-127.5 overflow-hidden border-border bg-card shadow-none">
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-2 text-ring">
                     <CalendarDays className="size-4" aria-hidden="true" />
@@ -421,7 +427,7 @@ function UIPlayground() {
             </CarouselItem>
 
             <CarouselItem className="basis-full pl-5 md:basis-[70%] xl:basis-1/2">
-              <Card className="h-full min-h-[510px] overflow-hidden border-border bg-card shadow-none">
+              <Card className="h-full min-h-127.5 overflow-hidden border-border bg-card shadow-none">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2 text-ring">
                     <Volume2 className="size-4" aria-hidden="true" />
@@ -435,13 +441,13 @@ function UIPlayground() {
                     <div
                       role="img"
                       aria-label="Singer performing on stage"
-                      className="relative aspect-[2/1] overflow-hidden bg-[#18201d] bg-cover bg-center opacity-90"
+                      className="relative aspect-2/1 overflow-hidden bg-[#18201d] bg-cover bg-center opacity-90"
                       style={{
                         backgroundImage:
                           "url(https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1000&q=85)",
                       }}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
                       <p className="absolute bottom-4 left-4 text-xs font-medium uppercase tracking-[0.2em] text-white/80">Studio sessions · Vol. 01</p>
                     </div>
 
@@ -506,7 +512,7 @@ function UIPlayground() {
             </CarouselItem>
 
             <CarouselItem className="basis-full pl-5 md:basis-[70%] xl:basis-1/2">
-              <Card className="h-full min-h-[510px] border-border bg-card shadow-none">
+              <Card className="h-full min-h-127.5 border-border bg-card shadow-none">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2 text-ring">
                     <MessageCircle className="size-4" aria-hidden="true" />
@@ -515,7 +521,7 @@ function UIPlayground() {
                   <CardTitle className="mt-1">Support chat</CardTitle>
                   <CardDescription>Send a message to try the chat interaction.</CardDescription>
                 </CardHeader>
-                <CardContent className="flex h-[390px] flex-col">
+                <CardContent className="flex h-97.5 flex-col">
                   <MessageGroup className="min-h-0 flex-1 overflow-y-auto pr-2">
                     {chatMessages.map((item, index) => (
                       <Message key={`${item.from}-${index}`} align={item.from === "you" ? "end" : "start"}>
@@ -778,36 +784,40 @@ export default function Home() {
                 </h3>
 
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                  {items.map(({ name, link, icon: Icon, color }) => (
-                    <div
-                      key={name}
-                      className="flex items-center gap-3 rounded-2xl border border-border bg-card/80 p-4 transition-colors hover:border-ring/40"
-                    >
-                      <span
-                        className="flex h-10 w-10 items-center justify-center rounded-xl"
-                        style={{
-                          color,
-                          backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)`,
-                        }}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </span>
+                  {items.map(({ name, link, description, icon: Icon, color }) => (
+                    <Tooltip key={name}>
+                      <TooltipTrigger>
+                        <div
+                          className="flex items-center gap-3 rounded-2xl border border-border bg-card/80 p-4 transition-colors hover:border-ring/40"
+                        >
+                          <span
+                            className="flex h-10 w-10 items-center justify-center rounded-xl"
+                            style={{
+                              color,
+                              backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)`,
+                            }}
+                          >
+                            <Icon className="h-5 w-5" />
+                          </span>
 
-                      <span className="text-sm font-medium text-secondary-foreground">
-                        {name}
-                      </span>
+                          <span className="text-sm font-medium text-secondary-foreground">
+                            {name}
+                          </span>
 
-                      <a
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Visit ${name} website`}
-                        title={`Open ${name} website`}
-                        className="ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-border text-secondary-foreground transition-colors hover:border-ring/40 hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                      >
-                        <ExternalLink className="size-4" aria-hidden="true" />
-                      </a>
-                    </div>
+                          <a
+                            href={link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Visit ${name} website`}
+                            title={`Open ${name} website`}
+                            className="ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-border text-secondary-foreground transition-colors hover:border-ring/40 hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                          >
+                            <ExternalLink className="size-4" aria-hidden="true" />
+                          </a>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>{description}</TooltipContent>
+                    </Tooltip>
                   ))}
                 </div>
               </div>

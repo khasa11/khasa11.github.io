@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 const inter = localFont({
@@ -24,12 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="ru"
+      lang="en"
       suppressHydrationWarning
       className={cn("antialiased", "font-sans", inter.variable)}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
