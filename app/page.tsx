@@ -43,6 +43,7 @@ import {
   SiTailwindcss,
   SiThreedotjs,
   SiTypescript,
+  SiXyflow,
   SiZod,
 } from "react-icons/si";
 
@@ -96,6 +97,7 @@ const stackCategories: Array<{ name: string; items: StackItem[] }> = [
       { name: "Next.js", link: "https://nextjs.org", icon: SiNextdotjs, color: "#F5F5F5" },
       { name: "Tailwind CSS", link: "https://tailwindcss.com", icon: SiTailwindcss, color: "#06B6D4" },
       { name: "shadcn/ui", link: "https://ui.shadcn.com", icon: SiShadcnui, color: "#F5F5F5" },
+      { name: "React Flow", link: "https://reactflow.dev", icon: SiXyflow, color: "#FF0072" },
       { name: "@react-pdf/renderer", link: "https://react-pdf.org", icon: FileText, color: "#FF5757" },
       { name: "HTML", link: "https://developer.mozilla.org/en-US/docs/Web/HTML", icon: SiHtml5, color: "#E34F26" },
       { name: "CSS", link: "https://developer.mozilla.org/en-US/docs/Web/CSS", icon: SiCss, color: "#1572B6" },
