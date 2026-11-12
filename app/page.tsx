@@ -940,7 +940,7 @@ export default function Home() {
 
           <p className="body-copy mt-6 max-w-md">
             Have something interesting in mind? Let&apos;s talk
-            about frontend, interfaces, or your favourite trail.
+            about frontend, interfaces, or your favorite stack.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
