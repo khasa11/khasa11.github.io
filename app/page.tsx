@@ -43,6 +43,7 @@ import {
   SiTailwindcss,
   SiThreedotjs,
   SiTypescript,
+  SiXyflow,
   SiZod,
 } from "react-icons/si";
 
