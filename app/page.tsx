@@ -21,9 +21,9 @@ import {
 } from "lucide-react";
 import {
   SiCss,
-  SiCaddy,
   SiDeepseek,
   SiDocker,
+  SiDrizzle,
   SiExpo,
   SiFigma,
   SiGit,
@@ -33,9 +33,9 @@ import {
   SiNextdotjs,
   SiNodedotjs,
   SiMinio,
+  SiNginx,
   SiPostgresql,
   SiPerplexity,
-  SiPrisma,
   SiReact,
   SiReacthookform,
   SiShadcnui,
@@ -129,7 +129,7 @@ const stackCategories: Array<{ name: string; items: StackItem[] }> = [
     items: [
       { name: "PostgreSQL", link: "https://www.postgresql.org", description: "Stores and queries relational application data.", icon: SiPostgresql, color: "#4169E1" },
       { name: "Oracle", link: "https://www.oracle.com/database/", description: "An enterprise relational database for storing and querying data.", icon: Database, color: "#F80000" },
-      { name: "Prisma", link: "https://www.prisma.io", description: "Provides a type-safe ORM for working with databases.", icon: SiPrisma, color: "#7D9BF5" },
+      { name: "Drizzle", link: "https://orm.drizzle.team", description: "Provides a lightweight, type-safe ORM for working with databases.", icon: SiDrizzle, color: "#C5F74F" },
     ],
   },
   {
@@ -143,7 +143,7 @@ const stackCategories: Array<{ name: string; items: StackItem[] }> = [
     name: "Infrastructure & Storage",
     items: [
       { name: "Docker", link: "https://www.docker.com", description: "Packages applications and dependencies into containers.", icon: SiDocker, color: "#2496ED" },
-      { name: "Caddy", link: "https://caddyserver.com", description: "Serves websites and manages HTTPS automatically.", icon: SiCaddy, color: "#1F88C0" },
+      { name: "Nginx", link: "https://nginx.org", description: "Serves web content and routes traffic as a reverse proxy.", icon: SiNginx, color: "#009639" },
       { name: "MinIO", link: "https://min.io", description: "Provides S3-compatible object storage.", icon: SiMinio, color: "#C72C48" },
       { name: "@aws-sdk/client-s3", link: "https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/", description: "Connects applications to Amazon S3 for object storage.", icon: Cloud, color: "#FF9900" },
     ],
