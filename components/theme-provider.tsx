@@ -13,6 +13,10 @@ function ThemeProvider({
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
+      scriptProps={{
+        type: typeof window === "undefined" ? "text/javascript" : "text/plain",
+        suppressHydrationWarning: true,
+      }}
       {...props}
     >
       <ThemeHotkey />

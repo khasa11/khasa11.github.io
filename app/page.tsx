@@ -12,13 +12,16 @@ import {
   KeyRound,
   Mail,
   MessageCircle,
+  Moon,
   Pause,
   Play,
   Send,
   SkipBack,
   SkipForward,
+  Sun,
   Volume2,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import {
   SiCss,
   SiDeepseek,
@@ -179,6 +182,24 @@ const leadershipSignals = [
   },
 ];
 
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  return (
+    <button
+      type="button"
+      aria-label="Toggle color theme"
+      title="Toggle color theme"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="inline-flex size-10 items-center justify-center border border-border text-secondary-foreground transition-colors hover:border-ring/40 hover:bg-muted hover:text-foreground"
+    >
+      <Sun className="hidden size-4 dark:block" aria-hidden="true" />
+      <Moon className="size-4 dark:hidden" aria-hidden="true" />
+    </button>
+  );
+}
+
 function HeroBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -197,6 +218,17 @@ function HeroBackground() {
     let height = 0;
     let animationFrame = 0;
     let lastFrame = 0;
+    let heroInk = "";
+
+    const updateHeroInk = () => {
+      heroInk = getComputedStyle(canvas).getPropertyValue("--hero-ink").trim();
+    };
+    const themeObserver = new MutationObserver(updateHeroInk);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    updateHeroInk();
 
     const resize = () => {
       const bounds = canvas.getBoundingClientRect();
@@ -240,7 +272,7 @@ function HeroBackground() {
             characters.length - 1,
             Math.floor(intensity * characters.length),
           );
-          context.fillStyle = `rgba(220, 220, 214, ${0.04 + intensity * 0.15})`;
+          context.fillStyle = `rgba(${heroInk}, ${0.12 + intensity * 0.28})`;
           context.fillText(
             characters[characterIndex],
             column * cellWidth,
@@ -270,6 +302,7 @@ function HeroBackground() {
     return () => {
       window.cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
+      themeObserver.disconnect();
     };
   }, []);
 
@@ -653,6 +686,7 @@ export default function Home() {
           </a>
 
           <nav aria-label="Primary actions" className="flex items-center gap-2">
+            <ThemeToggle />
             <a
               href="https://github.com/khasa11"
               target="_blank"

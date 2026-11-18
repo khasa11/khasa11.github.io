@@ -57,21 +57,66 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Одна палитра для сайта независимо от выбранного режима темы. */
-:root,
-.dark {
-  color-scheme: dark;
+:root {
+  color-scheme: light;
 
   --font-sans: "Inter", "Arial Narrow", sans-serif;
+  --hero-ink: 50, 50, 46;
+
+  --background: #f6f6f3;
+  --foreground: #191917;
+
+  --card: #ffffff;
+  --card-foreground: var(--foreground);
+
+  --popover: #ffffff;
+  --popover-foreground: var(--foreground);
+
+  --primary: #191917;
+  --primary-foreground: #f6f6f3;
+
+  --secondary: #e9e9e5;
+  --secondary-foreground: #292926;
+
+  --muted: #ededeb;
+  --muted-foreground: #696964;
+
+  --accent: #e2e2de;
+  --accent-foreground: #191917;
+
+  --destructive: #c62828;
+
+  --border: #19191724;
+  --input: #1919172e;
+  --ring: #191917;
+
+  --chart-1: #191917;
+  --chart-2: #4c4c47;
+  --chart-3: #777771;
+  --chart-4: #a4a49d;
+  --chart-5: #d0d0ca;
+
+  --radius: 0.625rem;
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  color-scheme: dark;
+  --hero-ink: 232, 232, 226;
 
   --background: #050505;
   --foreground: #f3f3f0;
 
   --card: #0b0b0b;
-  --card-foreground: var(--foreground);
-
-  --popover: #111;
-  --popover-foreground: var(--foreground);
+  --popover: #111111;
 
   --primary: #f3f3f0;
   --primary-foreground: #050505;
@@ -82,7 +127,7 @@
   --muted: #151515;
   --muted-foreground: #a2a29e;
 
-  --accent: #222;
+  --accent: #222222;
   --accent-foreground: #f3f3f0;
 
   --destructive: #f87171;
@@ -96,17 +141,6 @@
   --chart-3: #92928d;
   --chart-4: #5f5f5b;
   --chart-5: #30302e;
-
-  --radius: 0.625rem;
-
-  --sidebar: var(--card);
-  --sidebar-foreground: var(--foreground);
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--accent);
-  --sidebar-accent-foreground: var(--accent-foreground);
-  --sidebar-border: var(--border);
-  --sidebar-ring: var(--ring);
 }
 
 @layer base {
@@ -211,7 +245,7 @@
 
   .portfolio-page .bg-primary\/10,
   .portfolio-page .bg-primary\/\[0\.1\] {
-    background-color: #ffffff10;
+    background-color: color-mix(in srgb, var(--foreground) 7%, transparent);
   }
 
   .hero-reveal {
